@@ -3,11 +3,13 @@ package main
 import (
 	"strings"
 	"errors"
+	"fmt"
 )
 
 const (
 	prefix = "stk"
 	commandPricelist = "pricelist"
+	commandAdd = "add"
 )
 
 // ProcessCommand is execute received command.
@@ -27,6 +29,16 @@ func ProcessCommand(text string) (string, error) {
 			return "", err
 		}
 		return joinStocks(stocks), nil
+	case commandAdd:
+		if len(parsedCommand) < 3 {
+			return "", errors.New("invalid parameter")
+		}
+		stock := Stock{Code: parsedCommand[2]}
+		err := stock.Add()
+		if err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("Stock(%s) Added."), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}

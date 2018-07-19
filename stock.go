@@ -16,6 +16,12 @@ type Stock struct {
 	Price int `dynamo:"price"`
 }
 
+// Add puts stock in DynamoDB
+func (stock Stock) Add() (error) {
+	tbl := NewTable(tableName)
+	return tbl.Put(stock).Run() 
+}
+
 // AllStocks obtains all stock data in DynamoDB
 func AllStocks() ([]Stock, error) {
 	tbl := NewTable(tableName)
@@ -32,6 +38,7 @@ func AllStocks() ([]Stock, error) {
 
 	return stocks, nil
 }
+
 
 func joinStocks(stocks []Stock) (string){
 	switch len(stocks) {
