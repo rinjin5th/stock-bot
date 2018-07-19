@@ -33,12 +33,13 @@ func ProcessCommand(text string) (string, error) {
 		if len(parsedCommand) < 3 {
 			return "", errors.New("invalid parameter")
 		}
-		stock := Stock{Code: parsedCommand[2]}
+		code := parsedCommand[2]
+		stock := Stock{Code: code}
 		err := stock.Add()
 		if err != nil {
 			return "", err
 		}
-		return fmt.Sprintf("Stock(%s) Added."), nil
+		return fmt.Sprintf("Stock(%s) Added.", code), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}
