@@ -10,6 +10,7 @@ const (
 	prefix = "stk"
 	commandPricelist = "pricelist"
 	commandAdd = "add"
+	commandDel = "del"
 )
 
 // ProcessCommand is execute received command.
@@ -40,6 +41,17 @@ func ProcessCommand(text string) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("Stock(%s) Added.", code), nil
+	case commandDel:
+		if len(parsedCommand) < 3 {
+			return "", errors.New("invalid parameter")
+		}
+		code := parsedCommand[2]
+		stock := Stock{Code: code}
+		err := stock.Delete()
+		if err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("Stock(%s) Deleted.", code), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}
