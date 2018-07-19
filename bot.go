@@ -19,7 +19,7 @@ func ProcessCommand(text string) (string, error) {
 
 	switch parsedCommand[1] {
 	case commandPricelist:
-		if len(parsedCommand) < 3 {
+		if len(parsedCommand) < 2 {
 			return "", errors.New("invalid parameter")
 		}
 		stocks, err := AllStocks()
