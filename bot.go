@@ -4,6 +4,7 @@ import (
 	"strings"
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -11,6 +12,7 @@ const (
 	commandPricelist = "pricelist"
 	commandAdd = "add"
 	commandDel = "del"
+	commandBuy = "buy"
 )
 
 // ProcessCommand is execute received command.
@@ -52,6 +54,36 @@ func ProcessCommand(text string) (string, error) {
 			return "", err
 		}
 		return fmt.Sprintf("Stock(%s) Deleted.", code), nil
+	case commandBuy:
+		if len(parsedCommand) < 3 {
+			return "", errors.New("invalid parameter")
+		}
+		code := parsedCommand[2]
+		price, err := strconv.Atoi(parsedCommand[3])
+		if err != nil {
+			return "", err
+		}
+
+		var stock Stock
+		stock, err = GetStock(code)
+
+		if err != nil {
+			return "", err
+		}
+		if stock.Code == "" {
+			stock = Stock{Code: code, PurchasePrice: price}
+			err = stock.Add()
+			if err != nil {
+				return "", err
+			}
+		} else {
+			err = UpdatePurchasePrice(code, price)
+			if err != nil {
+				return "", err
+			}
+		}
+
+		return fmt.Sprintf("Stock(%s) bought.", code), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}

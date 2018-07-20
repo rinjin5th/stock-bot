@@ -14,6 +14,7 @@ type Stock struct {
 	Code  string `dynamo:"code"`
 	CompanyName string `dynamo:"company_name"`
 	Price int `dynamo:"price"`
+	PurchasePrice int `dynamo:"purchase_price"`
 }
 
 // Add puts stock in DynamoDB
@@ -45,6 +46,19 @@ func AllStocks() ([]Stock, error) {
 	return stocks, nil
 }
 
+// GetStock obtains stock data by the code in DynamoDB
+func GetStock(code string) (Stock, error) {
+	tbl := NewTable(tableName)
+	var stock Stock
+	err := tbl.Get("code", code).One(&stock)
+	return stock, err
+}
+
+// UpdatePurchasePrice updates stock's purchase_price
+func UpdatePurchasePrice(code string, price int) (error) {
+	tbl := NewTable(tableName)
+	return tbl.Update("code", code).Set("purchase_price", price).Run()
+}
 
 func joinStocks(stocks []Stock) (string){
 	switch len(stocks) {
