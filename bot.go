@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
+	"github.com/guregu/dynamo"
 )
 
 const (
@@ -67,20 +69,19 @@ func ProcessCommand(text string) (string, error) {
 		var stock Stock
 		stock, err = GetStock(code)
 
-		if err != nil {
-			return "", err
-		}
-		if stock.Code == "" {
+		if err == nil {
+			err = UpdatePurchasePrice(code, price)
+			if err != nil {
+				return "", err
+			}
+		} else if err == dynamo.ErrNotFound {
 			stock = Stock{Code: code, PurchasePrice: price}
 			err = stock.Add()
 			if err != nil {
 				return "", err
 			}
 		} else {
-			err = UpdatePurchasePrice(code, price)
-			if err != nil {
-				return "", err
-			}
+			return "", err
 		}
 
 		return fmt.Sprintf("Stock(%s) bought.", code), nil
