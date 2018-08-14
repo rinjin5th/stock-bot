@@ -1,7 +1,7 @@
 package main
 
 const (
-	keyProfit = 1 + iota
+	keyProfit = "1"
 )
 
 const (
