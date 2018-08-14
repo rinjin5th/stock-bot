@@ -105,7 +105,7 @@ func ProcessCommand(text string) (string, error) {
 			return "", err
 		}
 
-		profit := (price - oldStock.Price) * 100 * oldStock.Unit - (100 * oldStock.Unit)
+		profit := (price - oldStock.PurchasePrice) * 100 * oldStock.Unit - (100 * oldStock.Unit)
 		reflectedInProfit, err := ReflectInProfit(profit)
 		if err != nil {
 			return "", err
