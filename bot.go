@@ -51,8 +51,7 @@ func ProcessCommand(text string) (string, error) {
 			return "", errors.New("invalid parameter")
 		}
 		code := parsedCommand[2]
-		stock := Stock{Code: code}
-		err := stock.Delete()
+		err := Delete(code)
 		if err != nil {
 			return "", err
 		}

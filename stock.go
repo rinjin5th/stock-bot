@@ -25,9 +25,9 @@ func (stock Stock) Add() (error) {
 }
 
 // Delete deletes stock in DynamoDB
-func (stock Stock) Delete() (error) {
+func Delete(code string) (error) {
 	tbl := NewTable(tableName)
-	return tbl.Delete("code", stock.Code).Run() 
+	return tbl.Delete("code", code).Run() 
 }
 
 // AllStocks obtains all stock data in DynamoDB
