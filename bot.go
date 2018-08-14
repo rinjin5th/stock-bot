@@ -109,6 +109,11 @@ func ProcessCommand(text string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+
+		err := Delete(code)
+		if err != nil {
+			return "", err
+		}
 		
 		return fmt.Sprintf("Stock(%s) sold. Now, profit is (%d) yen.", code, reflectedInProfit), nil
 	default: 
