@@ -15,6 +15,7 @@ const (
 	commandAdd = "add"
 	commandDel = "del"
 	commandBuy = "buy"
+	commandSell = "sell"
 )
 
 // ProcessCommand is execute received command.
@@ -57,11 +58,15 @@ func ProcessCommand(text string) (string, error) {
 		}
 		return fmt.Sprintf("Stock(%s) Deleted.", code), nil
 	case commandBuy:
-		if len(parsedCommand) < 3 {
+		if len(parsedCommand) < 5 {
 			return "", errors.New("invalid parameter")
 		}
 		code := parsedCommand[2]
 		price, err := strconv.Atoi(parsedCommand[3])
+		if err != nil {
+			return "", err
+		}
+		unit, err := strconv.Atoi(parsedCommand[4])
 		if err != nil {
 			return "", err
 		}
@@ -70,12 +75,12 @@ func ProcessCommand(text string) (string, error) {
 		stock, err = GetStock(code)
 
 		if err == nil {
-			err = UpdatePurchasePrice(code, price)
+			err = UpdatePurchasePrice(code, price, unit)
 			if err != nil {
 				return "", err
 			}
 		} else if err == dynamo.ErrNotFound {
-			stock = Stock{Code: code, PurchasePrice: price}
+			stock = Stock{Code: code, PurchasePrice: price, Unit: unit}
 			err = stock.Add()
 			if err != nil {
 				return "", err
@@ -85,6 +90,28 @@ func ProcessCommand(text string) (string, error) {
 		}
 
 		return fmt.Sprintf("Stock(%s) bought.", code), nil
+	case commandSell:
+		if len(parsedCommand) < 4 {
+			return "", errors.New("invalid parameter")
+		}
+		code := parsedCommand[2]
+		price, err := strconv.Atoi(parsedCommand[3])
+		if err != nil {
+			return "", err
+		}
+
+		oldStock,err := GetStock(code)
+		if err != nil {
+			return "", err
+		}
+
+		profit := (price - oldStock.Price) * 100 * oldStock.Unit - (100 * oldStock.Unit)
+		reflectedInProfit, err := ReflectInProfit(profit)
+		if err != nil {
+			return "", err
+		}
+		
+		return fmt.Sprintf("Stock(%s) sold. Now, profit is (%d) yen.", code, reflectedInProfit), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}
