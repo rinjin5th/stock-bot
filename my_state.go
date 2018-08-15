@@ -10,7 +10,7 @@ const (
 
 // MyState is MyState object for DynamoDB
 type MyState struct {
-	Key string `dynamo:"key"`
+	Key int `dynamo:"key"`
 	Value int `dynamo:"value"`
 }
 
