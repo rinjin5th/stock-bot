@@ -1,30 +1,30 @@
 package main
 
 const (
-	keyProfit = "1"
+	keyProfit = 1 + iota
 )
 
 const (
-	tblStockState = "stock_state"
+	tblMyState = "my_state"
 )
 
-// StockState is StockState object for DynamoDB
-type StockState struct {
+// MyState is MyState object for DynamoDB
+type MyState struct {
 	Key string `dynamo:"key"`
 	Value int `dynamo:"value"`
 }
 
 // ReflectInProfit updates profit
 func ReflectInProfit(profit int) (int, error) {
-	tbl := NewTable(tblStockState)
-	var stockState StockState
-	err := tbl.Get("key", keyProfit).One(&stockState)
+	tbl := NewTable(tblMyState)
+	var myState MyState
+	err := tbl.Get("key", keyProfit).One(&myState)
 
 	if err != nil {
 		return 0, err
 	}
 
-	reflectedInProfit := stockState.Value + profit
+	reflectedInProfit := myState.Value + profit
 	err = tbl.Update("key", keyProfit).Set("value", reflectedInProfit).Run()
 	
 	if err != nil {

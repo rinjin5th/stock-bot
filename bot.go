@@ -110,7 +110,7 @@ func ProcessCommand(text string) (string, error) {
 			return "", err
 		}
 
-		err := Delete(code)
+		err = Delete(code)
 		if err != nil {
 			return "", err
 		}
