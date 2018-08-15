@@ -33,3 +33,14 @@ func ReflectInProfit(profit int) (int, error) {
 	
 	return reflectedInProfit, nil
 }
+
+// GetProfit obtains profit data from the DynamoDB
+func GetProfit() (int, error) {
+	tbl := NewTable(tblMyState)
+	var myState MyState
+	err := tbl.Get("key", keyProfit).One(&myState)
+	if err != nil {
+		return 0, err
+	}
+	return myState.Value, nil
+}

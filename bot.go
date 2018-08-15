@@ -16,6 +16,7 @@ const (
 	commandDel = "del"
 	commandBuy = "buy"
 	commandSell = "sell"
+	commandProfit = "profit"
 )
 
 // ProcessCommand is execute received command.
@@ -116,6 +117,13 @@ func ProcessCommand(text string) (string, error) {
 		}
 		
 		return fmt.Sprintf("Stock(%s) sold. Now, profit is (%d) yen.", code, reflectedInProfit), nil
+	case commandProfit:
+		profit, err := GetProfit()
+		if err != nil {
+			return "", err
+		}
+
+		return fmt.Sprintf("Profit is %d", profit), nil
 	default: 
 		return "", errors.New("invalid parameter")
 	}
